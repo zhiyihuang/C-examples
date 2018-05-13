@@ -31,6 +31,18 @@ usleep(1);
 }
 
 
+unsigned read_from_gpio(int pin)
+{
+volatile unsigned *gpio_level, res;
+
+gpio_level = (unsigned *)((char *)gpio + 0x34);
+
+res = *gpio_level & (1 << pin);
+
+return res;
+}
+
+
 void setgpiofunc(unsigned pin, unsigned func)
 {
         unsigned sel, data, shift;
