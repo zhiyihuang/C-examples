@@ -1,0 +1,13 @@
+Shut Down From Linux
+
+Once you’ve set up the computer, you can also shut it down from a Linux system. This requires the samba-common package installed – you can install it on Ubuntu with the following command:
+
+sudo apt-get install samba-common
+
+Once you have, use the following command from a terminal:
+
+net rpc shutdown -I ip.address -U user%password
+
+Replace “ip.address” with the numerical address of the Windows computer, “user” with the username of an account that has administrator privileges on the remote computer, and “password” with the user account’s password. You can add a “-r” option to the command if you want the computer to restart instead of shutting down.
+
+
