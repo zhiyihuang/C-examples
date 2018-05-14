@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
 
   setup_io();
   setgpiofunc(8, 1);
+
   n = atoi(argv[1]);
   if(n < 0 || n > 1) {
         printf("The number is invalid\n");

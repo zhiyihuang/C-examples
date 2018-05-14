@@ -39,7 +39,8 @@ gpio_level = (unsigned *)((char *)gpio + 0x34);
 
 res = *gpio_level & (1 << pin);
 
-return res;
+if(res) return 1;
+else return 0;
 }
 
 
