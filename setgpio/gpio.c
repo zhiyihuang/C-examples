@@ -18,43 +18,64 @@ void *gpio_map;
 // I/O access
 volatile unsigned *gpio;
 
-void write_to_gpio(char c)
+void write_to_gpio(char c, int pin)
 {
 volatile unsigned *gpio_set, *gpio_clear;
+
+if(pin > 31) {
+	fprintf(stderr, "Invalid pin number: %d\n", pin);
+	return;
+}
 
 gpio_set = (unsigned *)((char *)gpio + 0x1c);
 gpio_clear = (unsigned *)((char *)gpio + 0x28);
 
-if(c & 1) *gpio_set = 1 << 8;
-else *gpio_clear = 1 << 8;
+if(c & 1) *gpio_set = 1 << pin; //set pin
+else *gpio_clear = 1 << pin;// clear pin
 usleep(1);
 }
 
 
-void setgpiofunc(unsigned func, unsigned alt)
+unsigned read_from_gpio(int pin)
+{
+volatile unsigned *gpio_level, res;
+
+if(pin > 31) {
+        fprintf(stderr, "Invalid pin number: %d\n", pin);
+        return 0xffffffff;
+}
+
+
+gpio_level = (unsigned *)((char *)gpio + 0x34);
+
+res = *gpio_level & (1 << pin);
+
+if(res) return 1;
+else return 0;
+}
+
+
+void setgpiofunc(unsigned pin, unsigned func)
 {
         unsigned sel, data, shift;
         volatile unsigned *gpio_reg;
 
-        if(func > 53) return;
+        if(pin > 53) return;
         sel = 0;
-        while (func > 10) {
-            func = func - 10;
+        while (pin > 10) {
+            pin = pin - 10;
             sel++;
         }
         gpio_reg = gpio + sel;
         data = *gpio_reg;
-        shift = func + (func << 1);
+        shift = pin + (pin << 1);
         data &= ~(7 << shift);
-        data |= alt << shift;
+	func = func & 7;
+        data |= func << shift;
         *gpio_reg = data;
 }
 
 
-void setIOdir() // set OUTPUT direction of pin 8
-{
-setgpiofunc(8, 1);
-}
 //
 // Set up a memory regions to access GPIO
 //
@@ -87,27 +108,5 @@ void setup_io()
    gpio = (volatile unsigned *)gpio_map;
 
 } // setup_io
-
-
-int main(int argc, char **argv) {
-  int n;
-
-  if(argc != 2) {
-        printf("Usage: outgpio <numbers either 0 or 1>\n");
-        exit(0);
-  }
-
-  setup_io();
-  setIOdir();
-  n = atoi(argv[1]);
-  if(n < 0 || n > 1) {
-        printf("The number is invalid\n");
-        exit(0);
-  }
-
-    write_to_gpio(n);
-
-  return EXIT_SUCCESS;
-}
 
 

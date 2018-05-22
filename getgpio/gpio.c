@@ -22,6 +22,11 @@ void write_to_gpio(char c, int pin)
 {
 volatile unsigned *gpio_set, *gpio_clear;
 
+if(pin > 31) {
+	fprintf(stderr, "Invalid pin number: %d\n", pin);
+	return;
+}
+
 gpio_set = (unsigned *)((char *)gpio + 0x1c);
 gpio_clear = (unsigned *)((char *)gpio + 0x28);
 
@@ -34,6 +39,12 @@ usleep(1);
 unsigned read_from_gpio(int pin)
 {
 volatile unsigned *gpio_level, res;
+
+if(pin > 31) {
+        fprintf(stderr, "Invalid pin number: %d\n", pin);
+        return 0xffffffff;
+}
+
 
 gpio_level = (unsigned *)((char *)gpio + 0x34);
 
