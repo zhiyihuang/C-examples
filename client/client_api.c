@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#include <strings.h>
+#include <arpa/inet.h>
+#include <string.h>
 #include <errno.h>
 
 int connect_server(char *ipaddr, int port_num)
 {
   int sockfd;
+  struct sockaddr_in serv_addr;
 
   if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
 	perror("Could not create socket");

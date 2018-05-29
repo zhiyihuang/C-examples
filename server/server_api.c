@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#include <strings.h>
+#include <arpa/inet.h>
+#include <string.h>
 #include <errno.h>
 
 int setup_server_socket(int portno)
@@ -18,7 +21,6 @@ int setup_server_socket(int portno)
 	}
 
 	bzero((char *) &serv_addr, sizeof(serv_addr));
-        portno = 7102;
 
         serv_addr.sin_family = AF_INET;
         serv_addr.sin_addr.s_addr = INADDR_ANY;
@@ -43,7 +45,7 @@ int accept_client_connection(int sockfd)
 	struct sockaddr_in cli_addr;
 
 	clilen = sizeof(cli_addr);
-	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, (socklen_t *)&clilen);
 
 	if(newsockfd < 0)
 	{

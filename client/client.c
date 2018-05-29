@@ -13,7 +13,7 @@
 
 int main(int argc, char *argv[])
 {
-  int sockfd, port_num;
+  int sockfd, port_num, n;
   char buf[1000];
 
   if(argc != 3){
