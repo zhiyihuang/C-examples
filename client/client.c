@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
         exit(1);
   }
 
-  memset(buf, '0', 1000);
+  memset(buf, 0, 1000);
 
   sockfd = connect_server(argv[1], port_num);
 
