@@ -1,4 +1,4 @@
-all: temperature_monitor
+all: get_temp
 
 i2c_temp.o: i2c_temp.c i2c_api.h MPU9255.h
 	gcc -c i2c_temp.c -O2
