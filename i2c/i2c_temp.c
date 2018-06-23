@@ -3,7 +3,6 @@
 
 #include "i2c_api.h"
 #include "MPU9255.h"
-#include "server_api.h"
 
 float getTemperature(int fd)
 {
