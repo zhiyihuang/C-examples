@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "i2c_api.h"
 #include "MPU9255.h"
 
