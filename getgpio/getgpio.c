@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
   int n;
 
   if(argc != 1) {
-        printf("Usage: setgpio \n");
+        printf("Usage: getgpio \n");
         exit(0);
   }
 
