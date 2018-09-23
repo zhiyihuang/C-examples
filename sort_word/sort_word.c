@@ -1,16 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define word_len  1024
-
-struct link {
-	char word[word_len];
-	int count;
-	struct link *next;
-};
-
-void insert(struct link *head, char word[]);
+#include "link.h"
 
 struct word_count {
 char key[word_len];
@@ -84,20 +75,25 @@ sum = sum + s[i]*(i+1);
 return sum % 10000;
 }
 
-struct link *hash_table[10000];
+struct link_wd *hash_table[10000];
 
 int main(int argc, char *argv[])
 {
-int x,i,j,min,n, last_char, h;
+int x,i,j,min,n, last_char, h, k;
 char temp[word_len];
-struct link *ptr;
+struct link_wd *ptr;
+struct link_fn *fn_head;
 
 FILE *f;
 
-     if(argc != 2) {
+     if(argc < 2) {
 	printf("Usage: %s <filename>\n", argv[0]);
 	exit(1);
      }
+
+     for(i=0; i<10000; i++) hash_table[i] = NULL;
+
+for(k=1; k<argc; k++){
      f = fopen(argv[1], "r");
      i = 0;
      // assumes no word exceeds length of 1023
@@ -118,19 +114,25 @@ FILE *f;
                printf("\n");
 */
 
-     for(i=0; i<10000; i++) hash_table[i] = NULL;
+//     for(i=0; i<10000; i++) hash_table[i] = NULL;
 
      for(i=0; i<n; i++) {
 	h = hash_func(word[i]);
 	if(hash_table[h] == NULL) {
-	    ptr = malloc(sizeof(struct link));
+	    ptr = malloc(sizeof(struct link_wd));
 	    strcpy(ptr->word, word[i]);
-	    ptr->count = 1;
+	    ptr->fnll_head = malloc(sizeof(struct link_fn));
+	    fn_head = ptr->fnll_head;
+	    strcpy(fn_head->fname, argv[k]);
+	    fn_head->count = 1;
+	    fn_head->next = NULL;
 	    ptr->next = NULL;
 	    hash_table[h] = ptr;
-	} else insert(hash_table[h], word[i]);
+	} else insert_wd(hash_table[h], word[i], argv[k]);
      }
+}
 
+/*
      for(i=0; i<10000; i++) {
 	if(hash_table[i] == NULL) continue;
 	ptr = hash_table[i];
@@ -138,7 +140,7 @@ FILE *f;
 	    printf("%s  %d\n", ptr->word, ptr->count);
 	    ptr = ptr->next;
 	}
-     }
+     }*/
 
 exit(0);
 
