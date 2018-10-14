@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 int x,i,j,min,n, last_char, h, k;
 char temp[word_len];
 struct link_wd *ptr;
-struct link_fn *fn_head;
+struct link_fn *fn_head, *ptr_1;
 
 FILE *f;
 
@@ -130,6 +130,32 @@ for(k=1; k<argc; k++){
 	    hash_table[h] = ptr;
 	} else insert_wd(hash_table[h], word[i], argv[k]);
      }
+}
+
+while(1)
+{
+fgets(temp, 100, stdin);
+temp[strlen(temp)-1] = '\0';
+h = hash_func(temp);
+if(hash_table[h] == NULL) {
+    printf("No such word: %s\n", temp);
+    continue;
+}
+
+ptr = hash_table[h];
+
+do {
+  if(strcmp(ptr->word, temp) == 0) {
+    ptr_1 = ptr->fnll_head;
+    do {
+	printf("%s: %d\n", ptr_1->fname, ptr_1->count);
+	ptr_1 = ptr_1->next;
+    } while(ptr_1 != NULL);
+    break;
+  }
+  ptr = ptr->next;
+} while(ptr != NULL);
+if(ptr == NULL) printf("No such word: %s\n", temp);
 }
 
 /*
