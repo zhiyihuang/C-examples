@@ -94,7 +94,7 @@ FILE *f;
      for(i=0; i<10000; i++) hash_table[i] = NULL;
 
 for(k=1; k<argc; k++){
-     f = fopen(argv[1], "r");
+     f = fopen(argv[k], "r");
      i = 0;
      // assumes no word exceeds length of 1023
      while (fscanf(f, " %1023s", word[i]) == 1) {
