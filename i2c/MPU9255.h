@@ -3,6 +3,18 @@
 
 #define 	DEVICE_ADDRESS    		0x68
 #define         MAG_ADDRESS       		0x0C
+#define		ALTIMETER_ADDR			0x77
+
+#define		ALTIMETER_RESET			0x1E
+#define		ALTIMETER_ADC_D1		0x40
+#define		ALTIMETER_ADC_D2		0x50
+#define		ALTIMETER_ADC_READ		0x00
+#define		ADC_256				0x00
+#define		ADC_512				0x02
+#define 	ADC_1024			0x04
+#define		ADC_2048			0x06
+#define		ADC_4096			0x08
+#define 	ADC_8192			0x0A
 
 #define    	GYRO_FULL_SCALE_250_DPS    	0x00
 #define    	GYRO_FULL_SCALE_500_DPS    	0x08
