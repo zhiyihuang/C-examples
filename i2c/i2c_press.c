@@ -25,27 +25,41 @@ static uint16_t acal[8]; // for calibration of the altimeter; read from the PROM
 
 void getPressure(int fd)
 {
-uint32_t rp, rt;
+uint32_t rp, rt, n;
 uint8_t byte0, byte1, byte2;
+uint8_t data[32];
 double press, temp, dt, off, sen, off2, sen2, t2, altitude;
 
-	write_byte(fd, ALTIMETER_ADDR, ALTIMETER_ADC_D1|ADC_8192, 0);
-	usleep(20000);
+data[0]=data[1]=data[2]=0;
 
+	write_quick(fd, ALTIMETER_ADDR, ALTIMETER_ADC_D1|ADC_8192);
+	usleep(50000);
+
+	n = read_bytes(fd, ALTIMETER_ADDR, ALTIMETER_ADC_READ, data);
+/*
         byte0 = read_byte(fd, ALTIMETER_ADDR, ALTIMETER_ADC_READ);
         byte1 = read_byte(fd, ALTIMETER_ADDR, ALTIMETER_ADC_READ + 1);
 	byte2 = read_byte(fd, ALTIMETER_ADDR, ALTIMETER_ADC_READ + 2);
 
         rp = (uint32_t)((uint32_t) byte0 << 16 | (uint32_t) byte1 << 8 | byte2);
+*/
+	rp = (uint32_t)((uint32_t) data[0] << 16 | (uint32_t) data[1] << 8 | data[2]);
+printf("Raw pressure is %x num of bytes is %d\n", rp, n);
 
-	write_byte(fd, ALTIMETER_ADDR, ALTIMETER_ADC_D2|ADC_8192, 0);
+	write_quick(fd, ALTIMETER_ADDR, ALTIMETER_ADC_D2|ADC_8192);
         usleep(20000);
 
+	n = read_bytes(fd, ALTIMETER_ADDR, ALTIMETER_ADC_READ, data);
+/*
         byte0 = read_byte(fd, ALTIMETER_ADDR, ALTIMETER_ADC_READ);
         byte1 = read_byte(fd, ALTIMETER_ADDR, ALTIMETER_ADC_READ + 1);
         byte2 = read_byte(fd, ALTIMETER_ADDR, ALTIMETER_ADC_READ + 2);
 
         rt = (uint32_t)((uint32_t) byte0 << 16 | (uint32_t) byte1 << 8 | byte2);
+*/
+
+	rt = (uint32_t)((uint32_t) data[0] << 16 | (uint32_t) data[1] << 8 | data[2]);
+printf("Raw temperature is %x num of bytes is %d\n", rt, n);
 
 	dt = (float)rt - acal[5]*256.0;
 	off = acal[2]*1024.0*128.0 + dt*acal[4]/64.0;
@@ -77,7 +91,7 @@ double press, temp, dt, off, sen, off2, sen2, t2, altitude;
 
 void reset(int fd)
 {
-	write_byte(fd, ALTIMETER_ADDR, ALTIMETER_RESET, 0);
+	write_quick(fd, ALTIMETER_ADDR, ALTIMETER_RESET);
 }
 
 
@@ -87,31 +101,32 @@ uint32_t r;
 uint8_t b;
 int i;
 
-	acal[0] = acal[0] & 0xFFF;
+	acal[0] = acal[0] & 0x0FFF;
 	acal[7] = 0;
 	r = 0;
 	for(i=0; i<16; i++){
-	    if(i%2==1) r ^= (uint16_t) (acal[i>>1] & 0xFF);
+	    if(i%2==1) r ^= (uint16_t) (acal[i>>1] & 0x00FF);
 	    else r ^= (uint16_t) (acal[i>>1] >> 8);
 	    for(b=8; b>0; b--) {
 		if(r & 0x8000) r = (r << 1) ^ 0x3000;
 		else r = r << 1;
 	    }
 	}
-	r = (r >> 12) & 0xF;
-	return r;
+	r = (r >> 12) & 0x000F;
+	return r^0x00;
 }
 
 void readCalData(int fd)
 {
-int i, raddr;
-uint8_t data[2], oldcrc, crc;
+int i, raddr, n;
+uint8_t oldcrc, crc;
+uint16_t data;
 
 	raddr = 0xA0;
 	for(i=0; i<7; i++){
-	    data[0] = read_byte(fd, ALTIMETER_ADDR, raddr);
-	    data[1] = read_byte(fd, ALTIMETER_ADDR, raddr+1);
-	    acal[i] = (uint16_t)(((uint16_t) data[0] << 8) | data[1]);
+	    data = 0;
+	    data = read_word(fd, ALTIMETER_ADDR, raddr);
+	    acal[i] = ((data & 0xFF) << 8) | ((data & 0xFF00) >> 8);
 	    raddr += 2;
 	}
 printf("The calibration data is: ");
@@ -119,7 +134,7 @@ for(i=0; i<7; i++) printf("%x ", acal[i]);
 printf("\n");
 oldcrc = acal[0] >> 12;
 crc = checkcrc();
-printf("The original CRC is %d while the calculated CRC is %d\n", oldcrc, crc);
+printf("The original CRC is %x while the calculated CRC is %x\n", oldcrc, crc);
 }
 
 
