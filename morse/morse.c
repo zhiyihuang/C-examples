@@ -65,8 +65,9 @@ char c;
     for(i=0;i<5;i++){
        if(morsecode[j][i] == 1) {printf("long \n"); long_code();}
        if(morsecode[j][i] == 0) {printf("short \n"); short_code();}
-       if(morsecode[j][i] == -1) {gap(); break;}
+       if(morsecode[j][i] == -1) {break;}
     }
+    gap();
     k++;
     c = argv[1][k];
   }
