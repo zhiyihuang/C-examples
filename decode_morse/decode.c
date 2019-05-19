@@ -5,6 +5,8 @@
 #include "Grove_DLS.h"
 #include "time.h"
 
+#define LT 5000
+
 unsigned short getLight(int fd)
 {
         u8 byte1 = read_byte(fd, DEVICE_ADDRESS, DATA0HIGH);
@@ -31,7 +33,7 @@ int main(int argc, char** argv)
 {
 	int fd;
 	unsigned short light;
-	unsigned long t1, t2;
+	unsigned long t1, t2, t;
 
 	fd = open_i2c();
 	powerUp(fd);
@@ -39,11 +41,23 @@ int main(int argc, char** argv)
 	t1 = t2 = 0;
 	while(1){	
 	  light = getLight(fd);
-	  if(light > 2000) {
+	  if(light > LT) {
 	    t1 = ustime();
-	    while (light > 2000) light = getLight(fd);
+	    while (light > LT) light = getLight(fd);
 	    t2 = ustime();
-	    printf("The reading from the light sensor is %u. and over threshold time is %lu\n", light, t2-t1);
+	    t = t2 - t1;
+	    //printf("The reading from the light sensor is %u. and over threshold time is %lu\n", light, t);
+	    if(t > 1000000) printf("long %lu\n", t);
+	    else printf("short\n");
+	  } else {
+	    t1 = ustime();
+	    while(light <= LT) light = getLight(fd);
+	    t2 = ustime();
+	    t = t2 - t1;
+	    //printf("The gap time is %lu\n", t);
+	    if(t > 2000000 && t <= 4000000) printf("letter finished\n");
+	    else if(t > 4000000) printf("space\n");
+	
 	  }
 	//usleep(50000);
 	}
