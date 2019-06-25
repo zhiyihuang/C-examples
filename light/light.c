@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include "i2c_api.h"
 #include "Grove_DLS.h"
+#include "gpio.h"
 
 unsigned short getLight(int fd)
 {
@@ -33,13 +34,17 @@ int main(int argc, char** argv)
 
 	fd = open_i2c();
 	powerUp(fd);
+	setup_io();
+	setgpiofunc(8, 1);
 
 while(1)
 {	
 	light = getLight(fd);
 
 	printf("The reading from the light sensor is %u.\n", light);
-	usleep(50000);
+	if(light < 1000) write_to_gpio(1, 8);
+	if(light >= 11500) write_to_gpio(0, 8);
+	usleep(5000000);
 }
 }
 
