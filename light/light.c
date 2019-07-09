@@ -42,9 +42,7 @@ while(1)
 	light = getLight(fd);
 
 	printf("The reading from the light sensor is %u.\n", light);
-	if(light < 1000) write_to_gpio(1, 8);
-	if(light >= 11500) write_to_gpio(0, 8);
-	usleep(5000000);
+	usleep(1000000);
 }
 }
 
