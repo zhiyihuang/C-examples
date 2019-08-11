@@ -29,20 +29,26 @@ void powerUp(int fd)
 
 int main(int argc, char** argv)
 {
-	int fd;
+	int fd, i;
 	unsigned short light;
+	FILE *fp;
+	int lightdata[200];
 
+	fp = fopen("light.dat", "w");
 	fd = open_i2c();
 	powerUp(fd);
 	setup_io();
 	setgpiofunc(8, 1);
 
-while(1)
+for(i=0;i<200;i++)
 {	
-	light = getLight(fd);
+	lightdata[i] = getLight(fd);
 
-	printf("The reading from the light sensor is %u.\n", light);
+	printf("The reading from the light sensor is %u.\n", lightdata[i]);
 	usleep(1000000);
 }
+
+fwrite(lightdata, 200, sizeof(int), fp);
+fclose(fp);
 }
 

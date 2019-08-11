@@ -10,7 +10,7 @@ gpio.o: gpio.c gpio.h
 	gcc -c gpio.c -O2
 
 light: light.o i2c_api.o gpio.o
-	gcc -o light light.o i2c_api.o gpio.o -li2c
+	gcc -o light light.o i2c_api.o gpio.o
 
 clean:
 	rm -rf *.o light
