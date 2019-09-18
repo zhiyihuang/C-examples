@@ -13,7 +13,7 @@ void reset_terminal_mode()
     tcsetattr(0, TCSANOW, &orig_termios);
 }
 
-void set_conio_terminal_mode()
+void set_terminal_mode()
 {
     struct termios new_termios;
 

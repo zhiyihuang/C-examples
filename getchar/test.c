@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {int r;
-    set_conio_terminal_mode();
+    set_terminal_mode();
 
     while (1) {
         /* do some work */
