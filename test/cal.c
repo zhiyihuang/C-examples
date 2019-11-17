@@ -76,7 +76,13 @@ if(argc != 1) {
 printf("Usage: %s \n", argv[0]);
 exit(0);
 }
-printf("The string comparison result is %d", strcmp("0000000003741825", "1073741824"));
+
+printf("The number 1073741824 is converted into %d\n", atoi("1073741824"));
+
+printf("The number 99999073741824 is converted into %d\n", atoi("99999073741824"));
+
+exit(0);
+
 
 while(1){
 printf("input your expression: ");
