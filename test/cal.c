@@ -47,6 +47,7 @@ else return 0;
 int is_number(char *s)
 {
 int i;
+if(strlen(s)==0) return 2;
 i = 0;
 while(s[i] != 0){
     if(s[i] >= '0' && s[i] <= '9') i = i+1;
@@ -77,13 +78,6 @@ printf("Usage: %s \n", argv[0]);
 exit(0);
 }
 
-printf("The number 1073741824 is converted into %d\n", atoi("1073741824"));
-
-printf("The number 99999073741824 is converted into %d\n", atoi("99999073741824"));
-
-exit(0);
-
-
 while(1){
 printf("input your expression: ");
 fgets(buf, 100, stdin);
@@ -92,8 +86,13 @@ printf("The string is %s\n", buf);
 printf("The length of the string is %d\n", strlen(buf));
 char num1[100], num2[100], op[100], *p;
 p = get_token(buf, num1);
-if(is_number(num1)==0) {
-	printf("Wrong number: %s\n", num1);
+if(is_operator(num1) == 1) {
+	printf("Missing num1\n");
+	continue;
+}
+if(is_number(num1)!=1) {
+	if(is_number(num1)==0)printf("Wrong number: %s\n", num1);
+	else printf("Missing num1\n");
 	continue;
 }
 if(larger_number(num1) == 1) {
@@ -106,8 +105,9 @@ if(is_operator(op)==0) {
 	continue;
 }
 p = get_token(p, num2);
-if(is_number(num2)==0) {
-	printf("Wrong number: %s\n", num2);
+if(is_number(num2)!=1) {
+	if(is_number(num2)==0)printf("Wrong number: %s\n", num2);
+	else printf("Missing num2\n");
 	continue;
 }
 if(larger_number(num2) == 1) {
