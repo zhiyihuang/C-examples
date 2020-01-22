@@ -10,7 +10,7 @@ time.o: time.c time.h
 	gcc -c time.c -O2
 
 decode: decode.o i2c_api.o time.o
-	gcc -o decode decode.o i2c_api.o time.o
+	gcc -o decode decode.o i2c_api.o time.o -li2c
 
 clean:
 	rm -rf *.o decode

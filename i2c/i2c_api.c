@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/ioctl.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <linux/i2c-dev.h>
+#include <i2c/smbus.h>
 #include "i2c_api.h"
 
 int open_i2c()
